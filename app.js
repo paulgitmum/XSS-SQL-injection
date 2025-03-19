@@ -1,10 +1,15 @@
-
 const express = require("express");
 const escapeHtml = require("escape-html"); 
 const app = express();
 
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.json());
+
+// Simulated Database Query Execution Function (Unsafe)
+function fakeDatabaseQuery(query) {
+    console.log("Executing SQL:", query); 
+    return "Fake user data returned!"; 
+}
 
 app.get("/", (req, res) => {
     res.send(`
@@ -17,12 +22,13 @@ app.get("/", (req, res) => {
 
 app.get("/search", (req, res) => {
     const query = req.query.query;
-    
+
     // Simulated SQL injection vulnerability 
     const sqlQuery = `SELECT * FROM users WHERE name = '${query}'`; 
+    const result = fakeDatabaseQuery(sqlQuery); // Simulating SQL execution
 
-    // XSS vulnerability remains
-    res.send(`<h1>Results for: ${query}</h1>`); 
+    // XSS vulnerability: direct insertion of user input into HTML
+    res.send(`<h1>Results for: ${query}</h1> <p>${result}</p>`); 
 });
 
 app.listen(3000, () => {
