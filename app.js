@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+const escapeHtml = require("escape-html"); 
+
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.json());
 
@@ -17,9 +19,9 @@ app.get("/search", (req, res) => {
     
     const query = req.query.query;
     
-    const unnecessaryDeclaration = 'Dummy'
-  
-    res.send(`<h1>Results for: ${query}</h1>`);
+   const safeQuery = escapeHtml(query);
+    
+    res.send(`<h1>Results for: ${safeQuery}</h1>`);
 });
 
 app.listen(3000, () => {
